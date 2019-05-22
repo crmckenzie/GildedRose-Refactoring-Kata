@@ -4,9 +4,14 @@ fn update_quality(name: &str, sell_in: i32, quality: i32 ) -> Item{
     let item = Item::new(String::from(name), sell_in, quality);
     let items = vec![item];
     let mut rose = GildedRose::new(items);
+
     rose.update_quality();
 
     let result = rose.items.pop().unwrap();
+    /*
+        A csharp dev would be tempted to simply return `item`.
+        This is illegal in rust as the value is now owned by the vector.
+    */
     result
 }
 
