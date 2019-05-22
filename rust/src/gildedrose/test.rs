@@ -37,3 +37,14 @@ pub fn quality_cannot_be_negative() {
     assert_eq!(-1, result.sell_in);
     assert_eq!(0, result.quality);
 }
+
+
+#[test]
+pub fn aged_brie_increases_in_quality_with_age() {
+    let result = update_quality("Aged Brie", 10, 20);
+
+    assert_eq!("Aged Brie", result.name);
+    assert_eq!(9, result.sell_in);
+    assert_eq!(21, result.quality);
+}
+
