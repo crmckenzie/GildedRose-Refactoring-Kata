@@ -17,6 +17,14 @@ pub struct GildedRose {
     pub items: vec::Vec<Item>
 }
 
+fn adjust_quality(item:&mut Item, adjustment: i32) {
+
+    item.quality += adjustment;
+
+    if item.quality < 0 { item.quality = 0};
+    if item.quality > 50 { item.quality = 50};
+}
+
 impl GildedRose {
     pub fn new(items: vec::Vec<Item>) -> GildedRose {
         GildedRose {items: items}
@@ -30,6 +38,7 @@ impl GildedRose {
 
             item.sell_in = item.sell_in - 1;
             let mut adjustment = -1;
+
             if item.name == "Aged Brie" {
                 adjustment = if item.sell_in < 0 { 2 } else {1};
             } else if item.name == "Backstage passes to a TAFKAL80ETC concert" {
@@ -46,9 +55,7 @@ impl GildedRose {
                 adjustment = if item.sell_in < 0 {-2} else {-1};
             }
 
-            item.quality += adjustment;
-            if item.quality < 0 { item.quality = 0};
-            if item.quality > 50 { item.quality = 50};
+            adjust_quality(item, adjustment);
         }
     }
 }
