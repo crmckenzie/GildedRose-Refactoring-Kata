@@ -1,16 +1,18 @@
 use super::{Item, GildedRose};
 
-#[test]
-pub fn standard_item() {
-    let sell_in = 10;
-    let quality = 20;
-    let name = "foo";
+fn update_quality(name: &str, sell_in: i32, quality: i32 ) -> Item{
     let item = Item::new(String::from(name), sell_in, quality);
     let items = vec![item];
     let mut rose = GildedRose::new(items);
     rose.update_quality();
 
     let result = rose.items.pop().unwrap();
+    result
+}
+
+#[test]
+pub fn standard_item() {
+    let result = update_quality("foo", 10, 20);
 
     assert_eq!("foo", result.name);
     assert_eq!(9, result.sell_in);
