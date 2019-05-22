@@ -57,11 +57,18 @@ pub fn aged_brie_increases_in_quality_faster_after_sell_by() {
     assert_eq!(22, result.quality);
 }
 
-
 #[test]
 pub fn quality_cannot_exceed_50() {
     let result = update_quality("Aged Brie", 0, 50);
 
     assert_eq!(-1, result.sell_in);
     assert_eq!(50, result.quality);
+}
+
+#[test]
+pub fn sulfuras_is_immutable() {
+    let result = update_quality("Sulfuras, Hand of Ragnaros", 0, 80);
+
+    assert_eq!(0, result.sell_in);
+    assert_eq!(80, result.quality);
 }
