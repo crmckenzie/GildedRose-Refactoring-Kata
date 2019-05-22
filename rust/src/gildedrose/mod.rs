@@ -29,12 +29,11 @@ impl GildedRose {
             }
 
             item.sell_in = item.sell_in - 1;
+            let mut adjustment = -1;
             if item.name == "Aged Brie" {
-                item.quality += if item.sell_in < 0 { 2 } else {1};
-
-                if item.quality > 50 { item.quality = 50};
+                adjustment = if item.sell_in < 0 { 2 } else {1};
             } else if item.name == "Backstage passes to a TAFKAL80ETC concert" {
-                item.quality += if item.sell_in < 0 {
+                adjustment = if item.sell_in < 0 {
                     -1 * item.quality
                 } else if item.sell_in < 5 {
                     3
@@ -44,9 +43,10 @@ impl GildedRose {
                     1
                 };
             } else {
-                item.quality -= if item.sell_in < 0 {2} else {1};
+                adjustment = if item.sell_in < 0 {-2} else {-1};
             }
 
+            item.quality += adjustment;
             if item.quality < 0 { item.quality = 0};
             if item.quality > 50 { item.quality = 50};
         }
