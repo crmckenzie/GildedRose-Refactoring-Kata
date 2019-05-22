@@ -28,16 +28,12 @@ impl GildedRose {
                 break;
             }
 
+            item.sell_in = item.sell_in - 1;
             if item.name == "Aged Brie" {
-                item.sell_in -= 1;
                 item.quality += if item.sell_in < 0 { 2 } else {1};
 
                 if item.quality > 50 { item.quality = 50};
-                break;
-            }
-
-            if item.name == "Backstage passes to a TAFKAL80ETC concert" {
-                item.sell_in -= 1;
+            } else if item.name == "Backstage passes to a TAFKAL80ETC concert" {
                 item.quality += if item.sell_in < 0 {
                     -1 * item.quality
                 } else if item.sell_in < 5 {
@@ -47,23 +43,12 @@ impl GildedRose {
                 } else {
                     1
                 };
-                if item.quality > 50 { item.quality = 50};
-                break;
+            } else {
+                item.quality -= if item.sell_in < 0 {2} else {1};
             }
 
-            if item.quality > 0 {
-                item.quality = item.quality - 1;
-            }
-
-            item.sell_in = item.sell_in - 1;
-
-            if item.sell_in < 0 {
-                if item.name != "Backstage passes to a TAFKAL80ETC concert" {
-                    if item.quality > 0 {
-                        item.quality = item.quality - 1;
-                    }
-                } 
-            }
+            if item.quality < 0 { item.quality = 0};
+            if item.quality > 50 { item.quality = 50};
         }
     }
 }
