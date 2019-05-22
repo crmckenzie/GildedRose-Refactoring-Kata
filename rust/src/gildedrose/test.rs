@@ -81,6 +81,7 @@ pub fn backstage_passes_increase_in_quality_with_age() {
     assert_eq!(19, result.sell_in);
     assert_eq!(31, result.quality);
 }
+
 #[test]
 pub fn backstage_passes_increase_in_quality_twice_as_fast_within_10_days() {
     let result = update_quality("Backstage passes to a TAFKAL80ETC concert", 10, 30);
@@ -89,4 +90,11 @@ pub fn backstage_passes_increase_in_quality_twice_as_fast_within_10_days() {
     assert_eq!(32, result.quality);
 }
 
+#[test]
+pub fn backstage_passes_increase_in_quality_thrice_as_fast_within_5_days() {
+    let result = update_quality("Backstage passes to a TAFKAL80ETC concert", 5, 30);
+
+    assert_eq!(4, result.sell_in);
+    assert_eq!(33, result.quality);
+}
 
