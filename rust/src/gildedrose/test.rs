@@ -98,3 +98,10 @@ pub fn backstage_passes_increase_in_quality_thrice_as_fast_within_5_days() {
     assert_eq!(33, result.quality);
 }
 
+#[test]
+pub fn backstage_passes_quality_drops_to_zero_after_the_concert() {
+    let result = update_quality("Backstage passes to a TAFKAL80ETC concert", 0, 30);
+
+    assert_eq!(-1, result.sell_in);
+    assert_eq!(0, result.quality);
+}
