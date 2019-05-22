@@ -1,10 +1,18 @@
 use super::{Item, GildedRose};
 
 #[test]
-pub fn foo() {
-    let items = vec![Item::new(String::from("foo"), 0, 0)];
+pub fn standard_item() {
+    let sell_in = 10;
+    let quality = 20;
+    let name = "foo";
+    let item = Item::new(String::from(name), sell_in, quality);
+    let items = vec![item];
     let mut rose = GildedRose::new(items);
     rose.update_quality();
 
-    assert_eq!("fixme", rose.items[0].name);
+    let result = rose.items.pop().unwrap();
+
+    assert_eq!("foo", result.name);
+    assert_eq!(9, result.sell_in);
+    assert_eq!(19, result.quality);
 }
