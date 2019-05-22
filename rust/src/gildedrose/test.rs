@@ -72,3 +72,14 @@ pub fn sulfuras_is_immutable() {
     assert_eq!(0, result.sell_in);
     assert_eq!(80, result.quality);
 }
+
+
+#[test]
+pub fn backstage_passes_increase_in_quality_with_age() {
+    let result = update_quality("Backstage passes to a TAFKAL80ETC concert", 20, 30);
+
+    assert_eq!(19, result.sell_in);
+    assert_eq!(31, result.quality);
+}
+
+
