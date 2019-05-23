@@ -110,3 +110,19 @@ pub fn backstage_passes_quality_drops_to_zero_after_the_concert() {
     assert_eq!(-1, result.sell_in);
     assert_eq!(0, result.quality);
 }
+
+#[test]
+pub fn conjured_item_degrades_twice_as_fast() {
+    let result = update_quality("Conjured foo", 20, 30);
+
+    assert_eq!(19, result.sell_in);
+    assert_eq!(28, result.quality);
+}
+
+#[test]
+pub fn conjured_item_degrades_twice_as_fast_after_sell_by() {
+    let result = update_quality("Conjured foo", 0, 30);
+
+    assert_eq!(-1, result.sell_in);
+    assert_eq!(26, result.quality);
+}

@@ -79,8 +79,16 @@ impl AdjustmentStrategy for StandardItem {
     }
 }
 
+struct ConjuredItem;
+impl AdjustmentStrategy for ConjuredItem {
+    fn calculate_adjustment(&self, item:&mut Item) -> i32 {
+        if item.sell_in < 0  {-4} else {-2}
+    }
+}
+
 fn get_strategy(name:&str) -> Box<AdjustmentStrategy> {
     match name {
+        _ if name.starts_with("Conjured ") => Box::new(ConjuredItem),
         "Sulfuras, Hand of Ragnaros" => Box::new(Sulfuras),
         "Aged Brie" => Box::new(AgedBrie),
         "Backstage passes to a TAFKAL80ETC concert" => Box::new(BackstagePasses),
