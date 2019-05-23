@@ -34,13 +34,13 @@ trait AdjustmentStrategy {
 
 struct Sulfuras;
 impl AdjustmentStrategy for Sulfuras {
-    fn adjust_quality(&self, item:&mut Item) {
+    fn adjust_quality(&self, _item:&mut Item) {
         // do nothing
     }
-    fn calculate_adjustment(&self, item: &mut Item) -> i32 {
+    fn calculate_adjustment(&self, _item: &mut Item) -> i32 {
         0
     }
-    fn decrement_sell_in(&self, item: &mut Item) {
+    fn decrement_sell_in(&self, _item: &mut Item) {
         // do nothing
     }
 }
@@ -72,6 +72,14 @@ impl AdjustmentStrategy for StandardItem {
     }
 }
 
+fn get_strategy(name:&str) -> Box<AdjustmentStrategy> {
+    match name {
+        "Sulfuras, Hand of Ragnaros" => Box::new(Sulfuras),
+        "Aged Brie" => Box::new(AgedBrie),
+        "Backstage passes to a TAFKAL80ETC concert" => Box::new(BackstagePasses),
+        _ => Box::new(StandardItem)
+    }
+}
 
 impl GildedRose {
     pub fn new(items: vec::Vec<Item>) -> GildedRose {
@@ -80,24 +88,9 @@ impl GildedRose {
 
     pub fn update_quality(&mut self) {
         for item in &mut self.items {
-
-            if item.name == "Sulfuras, Hand of Ragnaros" {
-                let strategy = Sulfuras;
-                strategy.decrement_sell_in(item);
-                strategy.adjust_quality(item);
-            } else if item.name == "Aged Brie" {
-                let strategy = AgedBrie;
-                strategy.decrement_sell_in(item);
-                strategy.adjust_quality(item);
-            } else if item.name == "Backstage passes to a TAFKAL80ETC concert" {
-                let strategy = BackstagePasses;
-                strategy.decrement_sell_in(item);
-                strategy.adjust_quality(item);
-            } else {
-                let strategy = StandardItem;
-                strategy.decrement_sell_in(item);
-                strategy.adjust_quality(item);
-            }
+            let strategy = get_strategy(&item.name);
+            strategy.decrement_sell_in(item);
+            strategy.adjust_quality(item);
         }
     }
 }
