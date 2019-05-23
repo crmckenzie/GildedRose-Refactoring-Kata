@@ -17,23 +17,16 @@ pub struct GildedRose {
     pub items: vec::Vec<Item>
 }
 
-fn adjust_quality(item:&mut Item, adjustment: i32) {
-
-    item.quality += adjustment;
-
-    if item.quality < 0 { item.quality = 0};
-    if item.quality > 50 { item.quality = 50};
-}
-
 trait AdjustmentStrategy {
-    fn adjust_quality(&self, item:&mut Item) {
-        let adjustment = self.calculate_adjustment(item);
+    fn calculate_adjustment(&self, item:&mut Item) -> i32;
 
+    fn adjust_quality(&self, item:&mut Item) {        
+        let adjustment = self.calculate_adjustment(item);
+        item.quality += adjustment;
         if item.quality < 0 { item.quality = 0};
         if item.quality > 50 { item.quality = 50};
     }
-
-    fn calculate_adjustment(&self, item: &Item) -> i32;
+    
     fn decrement_sell_in(&self, item:&mut Item) {
         item.sell_in -= 1;
     }
@@ -44,11 +37,38 @@ impl AdjustmentStrategy for Sulfuras {
     fn adjust_quality(&self, item:&mut Item) {
         // do nothing
     }
-    fn calculate_adjustment(&self, item: &Item) -> i32 {
+    fn calculate_adjustment(&self, item: &mut Item) -> i32 {
         0
     }
     fn decrement_sell_in(&self, item: &mut Item) {
         // do nothing
+    }
+}
+
+
+struct AgedBrie;
+impl AdjustmentStrategy for AgedBrie {
+    fn calculate_adjustment(&self, item: &mut Item) -> i32 {
+        if item.sell_in < 0 { 2 } else { 1 }
+    }
+}
+
+struct BackstagePasses;
+impl AdjustmentStrategy for BackstagePasses {
+    fn calculate_adjustment(&self, item: &mut Item) -> i32 {
+        match item.sell_in {
+            s if s < 0 => -1 * item.quality,
+            s if s < 5 => 3,
+            s if s < 10 => 2,
+            _ => 1
+        }
+    }
+}
+
+struct StandardItem;
+impl AdjustmentStrategy for StandardItem {
+    fn calculate_adjustment(&self, item:&mut Item) -> i32 {
+        if item.sell_in < 0  {-2} else {-1}
     }
 }
 
@@ -65,31 +85,19 @@ impl GildedRose {
                 let strategy = Sulfuras;
                 strategy.decrement_sell_in(item);
                 strategy.adjust_quality(item);
-                break;
-            }
-
-
-
-            item.sell_in -= 1;
-            let mut adjustment = -1;
-            if (item.name == "Aged Brie") {
-                adjustment = if item.sell_in < 0 { 2 } else { 1 }   
-            }
-            else if item.name == "Backstage passes to a TAFKAL80ETC concert" {
-                adjustment = if item.sell_in < 0 {
-                    -1 * item.quality
-                } else if item.sell_in < 5 {
-                    3
-                } else if item.sell_in < 10 {
-                    2
-                } else {
-                    1
-                };
+            } else if item.name == "Aged Brie" {
+                let strategy = AgedBrie;
+                strategy.decrement_sell_in(item);
+                strategy.adjust_quality(item);
+            } else if item.name == "Backstage passes to a TAFKAL80ETC concert" {
+                let strategy = BackstagePasses;
+                strategy.decrement_sell_in(item);
+                strategy.adjust_quality(item);
             } else {
-                adjustment = if item.sell_in < 0 {-2} else {-1};
+                let strategy = StandardItem;
+                strategy.decrement_sell_in(item);
+                strategy.adjust_quality(item);
             }
-
-            adjust_quality(item, adjustment);
         }
     }
 }
