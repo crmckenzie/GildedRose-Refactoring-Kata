@@ -25,6 +25,34 @@ fn adjust_quality(item:&mut Item, adjustment: i32) {
     if item.quality > 50 { item.quality = 50};
 }
 
+trait AdjustmentStrategy {
+    fn adjust_quality(&self, item:&mut Item) {
+        let adjustment = self.calculate_adjustment(item);
+
+        if item.quality < 0 { item.quality = 0};
+        if item.quality > 50 { item.quality = 50};
+    }
+
+    fn calculate_adjustment(&self, item: &Item) -> i32;
+    fn decrement_sell_in(&self, item:&mut Item) {
+        item.sell_in -= 1;
+    }
+}
+
+struct Sulfuras;
+impl AdjustmentStrategy for Sulfuras {
+    fn adjust_quality(&self, item:&mut Item) {
+        // do nothing
+    }
+    fn calculate_adjustment(&self, item: &Item) -> i32 {
+        0
+    }
+    fn decrement_sell_in(&self, item: &mut Item) {
+        // do nothing
+    }
+}
+
+
 impl GildedRose {
     pub fn new(items: vec::Vec<Item>) -> GildedRose {
         GildedRose {items: items}
@@ -32,16 +60,22 @@ impl GildedRose {
 
     pub fn update_quality(&mut self) {
         for item in &mut self.items {
+
             if item.name == "Sulfuras, Hand of Ragnaros" {
+                let strategy = Sulfuras;
+                strategy.decrement_sell_in(item);
+                strategy.adjust_quality(item);
                 break;
             }
 
-            item.sell_in = item.sell_in - 1;
-            let mut adjustment = -1;
 
-            if item.name == "Aged Brie" {
-                adjustment = if item.sell_in < 0 { 2 } else {1};
-            } else if item.name == "Backstage passes to a TAFKAL80ETC concert" {
+
+            item.sell_in -= 1;
+            let mut adjustment = -1;
+            if (item.name == "Aged Brie") {
+                adjustment = if item.sell_in < 0 { 2 } else { 1 }   
+            }
+            else if item.name == "Backstage passes to a TAFKAL80ETC concert" {
                 adjustment = if item.sell_in < 0 {
                     -1 * item.quality
                 } else if item.sell_in < 5 {
