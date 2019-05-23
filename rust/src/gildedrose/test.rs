@@ -1,4 +1,4 @@
-use super::{Item, GildedRose};
+use gildedrose::{Item, GildedRose};
 
 fn update_quality(name: &str, sell_in: i32, quality: i32 ) -> Item{
     let item = Item::new(String::from(name), sell_in, quality);

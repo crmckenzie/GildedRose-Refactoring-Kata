@@ -1,6 +1,4 @@
-
 mod gildedrose;
-
 use gildedrose::{Item, GildedRose};
 
 fn main() {
