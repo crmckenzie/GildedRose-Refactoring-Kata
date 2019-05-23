@@ -21,12 +21,17 @@ trait AdjustmentStrategy {
     fn calculate_adjustment(&self, item:&mut Item) -> i32;
 
     fn adjust_quality(&self, item:&mut Item) {        
+        self.decrement_sell_in(item);
         let adjustment = self.calculate_adjustment(item);
         item.quality += adjustment;
+        self.enforce_quality_range_requirements(item);
+    }
+    
+    fn enforce_quality_range_requirements(&self, item:&mut Item) {
         if item.quality < 0 { item.quality = 0};
         if item.quality > 50 { item.quality = 50};
     }
-    
+
     fn decrement_sell_in(&self, item:&mut Item) {
         item.sell_in -= 1;
     }
@@ -34,12 +39,14 @@ trait AdjustmentStrategy {
 
 struct Sulfuras;
 impl AdjustmentStrategy for Sulfuras {
-    fn adjust_quality(&self, _item:&mut Item) {
-        // do nothing
+    fn enforce_quality_range_requirements(&self, _item:&mut Item){
+        // do nothing    
     }
+
     fn calculate_adjustment(&self, _item: &mut Item) -> i32 {
         0
     }
+
     fn decrement_sell_in(&self, _item: &mut Item) {
         // do nothing
     }
@@ -89,7 +96,6 @@ impl GildedRose {
     pub fn update_quality(&mut self) {
         for item in &mut self.items {
             let strategy = get_strategy(&item.name);
-            strategy.decrement_sell_in(item);
             strategy.adjust_quality(item);
         }
     }
